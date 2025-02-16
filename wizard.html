@@ -18,7 +18,9 @@
       padding: 20px;
     }
 
-    /* Wizard Container */
+    /* -----------------------------
+       PAGE 1: Wizard Container
+    ------------------------------*/
     #wizardContainer {
       max-width: 600px;
       margin: 20px auto;
@@ -29,15 +31,19 @@
       display: flex;
       flex-direction: column;
     }
+
     .wizard-header {
       background: linear-gradient(135deg, #58aaf8 0%, #1e90ff 100%);
       color: #fff;
       padding: 20px;
       text-align: center;
     }
+
     .wizard-header h2 {
       margin-bottom: 10px;
     }
+
+    /* Progress Bar */
     #progressBar {
       width: 100%;
       background-color: rgba(255,255,255,0.3);
@@ -56,6 +62,8 @@
     .wizard-body {
       padding: 20px;
     }
+
+    /* Form Steps (fade effect) */
     .form-step {
       display: none;
       opacity: 0;
@@ -65,11 +73,13 @@
       display: block;
       opacity: 1;
     }
+
     .input-label {
       font-weight: bold;
       margin: 10px 0 5px;
       display: block;
     }
+
     input, select {
       width: 100%;
       padding: 10px;
@@ -79,15 +89,19 @@
       font-size: 16px;
       outline: none;
     }
+
+    /* Range Slider for CAT percentile */
     #catPercentileSlider {
       width: 100%;
       margin: 10px 0;
     }
+
     .slider-value {
       text-align: center;
       margin-bottom: 10px;
       font-weight: bold;
     }
+
     .nav-buttons {
       margin-top: 10px;
       display: flex;
@@ -112,6 +126,8 @@
     #prevBtn:hover {
       background: #5a6268;
     }
+
+    /* Encouraging Message */
     #encouragingMessage {
       font-style: italic;
       color: #333;
@@ -119,7 +135,9 @@
       margin-bottom: 10px;
     }
 
-    /* Results Container */
+    /* -----------------------------
+       PAGE 2: Results Container
+    ------------------------------*/
     #resultsContainer {
       max-width: 800px;
       margin: 20px auto;
@@ -129,15 +147,19 @@
       display: none; /* hidden until final step */
       padding: 20px;
     }
+
     .results-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 15px;
     }
+
     .results-header h2 {
       color: #333;
     }
+
+    /* Start Over button */
     #startOverBtn {
       background: #dc3545;
       color: #fff;
@@ -150,11 +172,15 @@
     #startOverBtn:hover {
       background: #c82333;
     }
+
+    /* IMS Profile Score Explanation */
     #scoreExplanation {
       font-style: italic;
       color: #666;
       margin-bottom: 15px;
     }
+
+    /* Score Meter */
     .score-meter {
       width: 100%;
       height: 20px;
@@ -176,6 +202,8 @@
       margin: 10px 0;
       color: #333;
     }
+
+    /* Section headings */
     h3.section-title {
       margin-top: 20px;
       margin-bottom: 10px;
@@ -183,6 +211,8 @@
       border-bottom: 1px solid #ccc;
       padding-bottom: 5px;
     }
+
+    /* Blank Profile Picture (animated) */
     #blankProfilePic {
       width: 80px;
       height: 80px;
@@ -196,6 +226,8 @@
       50% { transform: scale(1.05); }
       100% { transform: scale(1); }
     }
+
+    /* Dummy Profile Cards */
     .profile-cards {
       display: flex;
       gap: 10px;
@@ -232,12 +264,16 @@
       color: #555;
       margin-bottom: 8px;
     }
+
+    /* "Next one could be you!" styling */
     #closingNote {
       font-weight: bold;
       color: #444;
       margin-top: 15px;
       text-align: center;
     }
+
+    /* Responsive */
     @media (max-width: 768px) {
       .profile-card {
         width: 100%;
@@ -388,40 +424,107 @@
       "SSC": {
         "0-55": 1, "56-60": 2, "61-70": 3, "71-80": 5, "81-90": 8, "91-100": 10
       },
-      /* ... (rest of your table omitted for brevity, but keep it in your code) ... */
+      "HSC_Science": {
+        "0-50": 1, "51-55": 2, "56-65": 3, "66-75": 5, "76-90": 8, "91-100": 10
+      },
+      "HSC_Commerce": {
+        "0-50": 1, "51-55": 2, "56-65": 3, "66-75": 5, "76-90": 8, "91-100": 10
+      },
+      "HSC_Arts": {
+        "0-50": 1, "51-55": 2, "56-65": 3, "66-75": 5, "76-90": 8, "91-100": 10
+      },
+      "Graduation_Engineering": {
+        "1-60": 1, "61-65": 2, "66-70": 3, "71-75": 5, "76-85": 8, "86-100": 10
+      },
+      "Graduation_Science": {
+        "1-60": 1, "61-65": 2, "66-70": 3, "71-75": 5, "76-85": 8, "86-100": 10
+      },
+      "Graduation_Commerce": {
+        "1-60": 1, "61-65": 2, "66-70": 3, "71-75": 5, "76-85": 8, "86-100": 10
+      },
+      "Graduation_Arts": {
+        "1-60": 1, "61-65": 2, "66-70": 3, "71-75": 5, "76-85": 8, "86-100": 10
+      },
+      "Engg_NonEngg": { "Engg": 0, "Non-Engg": 0.08 },
+      "Gender": { "Male": 0, "Female": 0.08 },
+      "Category": {
+        "General": 0,
+        "NC-OBC": 0.1,
+        "EWS": 0.1,
+        "SC": 0.25,
+        "ST": 0.3
+      },
+      "Work Experience": {
+        "0": 0, "1": 0, "2": 0, "3": 0, "4": 0, "5": 0,
+        "6": 0.1667, "7": 0.3333, "8": 0.5, "9": 0.6667, "10": 0.8333,
+        "11": 1, "12": 1.1667, "13": 1.3333, "14": 1.5, "15": 1.6667,
+        "16": 1.8333, "17": 2, "18": 2.1667, "19": 2.3333, "20": 2.5,
+        "21": 2.6667, "22": 2.8333, "23": 3, "24": 3.1667, "25": 3.3333,
+        "26": 3.5, "27": 3.6667, "28": 3.8333, "29": 4, "30": 4.1667,
+        "31": 4.3333, "32": 4.5, "33": 4.6667, "34": 4.8333, "35": 5,
+        "36": 5, "37": 4.8, "38": 4.6, "39": 4.4, "40": 4.2,
+        "41": 4, "42": 3.8, "43": 3.6, "44": 3.4, "45": 3.2,
+        "46": 3, "47": 2.8, "48": 2.6, "49": 2.4, "50": 2.2,
+        "51": 2, "52": 1.8, "53": 1.6, "54": 1.4, "55": 1.2,
+        "56": 1, "57": 0.8, "58": 0.6, "59": 0.4, "60": 0.2
+      }
     };
 
+    // Colleges suggested based on user-chosen CAT percentile
     const percentileCollegeMap = [
       { min: 99, label: "99+", colleges: "Top IIMs (A/B/C), XLRI, FMS, SPJIMR, etc." },
-      /* ... rest ... */
+      { min: 95, label: "95-98", colleges: "IIM L, IIM K, IIM I, MDI, IMT, etc." },
+      { min: 90, label: "90-94", colleges: "Newer IIMs, XIMB, IMI, etc." },
+      { min: 80, label: "80-89", colleges: "TAPMI, BIMTECH, Tier-2 B-schools" },
+      { min: 0,  label: "<80",  colleges: "Focus on building your profile and consider retaking CAT." },
     ];
 
+    // Dummy profiles for "Similar Past Aspirants"
     const dummyProfiles = [
       {
         profileScore: 650,
         catPercentile: 90,
         colleges: ["IIM Lucknow", "IIM Indore"],
-        advice: "They improved their quantitative skills...",
+        advice: "They improved their quantitative skills with targeted coaching, which helped them secure final admits.",
         img: "https://via.placeholder.com/60/8f8e94/FFFFFF?text=P1"
       },
-      /* ... rest ... */
+      {
+        profileScore: 750,
+        catPercentile: 95,
+        colleges: ["IIM Ahmedabad", "IIM Bangalore"],
+        advice: "They sharpened their interview and group discussion techniques, ensuring a well-rounded application.",
+        img: "https://via.placeholder.com/60/00bfff/FFFFFF?text=P2"
+      },
+      {
+        profileScore: 800,
+        catPercentile: 99,
+        colleges: ["XLRI", "SP Jain"],
+        advice: "They focused on leadership roles and soft skills, standing out in the final interview rounds.",
+        img: "https://via.placeholder.com/60/ff69b4/FFFFFF?text=P3"
+      }
     ];
 
+    // Helper to find the best college range based on the chosen percentile
     function getCollegeSuggestion(userPct) {
+      // Sort from highest to lowest
       const sortedMap = percentileCollegeMap.sort((a, b) => b.min - a.min);
       for (let item of sortedMap) {
-        if (userPct >= item.min) return item.colleges;
+        if (userPct >= item.min) {
+          return item.colleges;
+        }
       }
-      return sortedMap[sortedMap.length - 1].colleges;
+      return sortedMap[sortedMap.length - 1].colleges; // fallback
     }
 
+    // Helper to find dummy profiles that are "similar" to the user’s final score & percentile
     function findSimilarProfiles(score, catPct) {
+      // For demonstration, let's just filter those within ±100 points and ±5 percentile
       return dummyProfiles.filter(p => {
         return Math.abs(p.profileScore - score) <= 100 && Math.abs(p.catPercentile - catPct) <= 5;
       });
     }
 
-    // For updating slider value text
+    // Step 10: update slider value text in real-time
     document.addEventListener("DOMContentLoaded", () => {
       const slider = document.getElementById("catPercentileSlider");
       const sliderVal = document.getElementById("sliderVal");
@@ -430,7 +533,7 @@
       });
     });
 
-    // Main function for final score
+    // Main function to gather user inputs, compute IMS Profile Score, show results
     function calculateScoreAndDisplay() {
       const gender = document.getElementById("gender").value || "Male";
       const ssc = parseInt(document.getElementById("ssc").value) || 0;
@@ -442,9 +545,10 @@
       const workExp = parseInt(document.getElementById("workExp").value) || 0;
       const category = document.getElementById("category").value || "General";
 
+      // Step 10: user-chosen CAT percentile
       const userPct = parseInt(document.getElementById("catPercentileSlider").value);
 
-      // Use backticks for template strings
+      // IMPORTANT: use backticks
       const hscStream = `HSC_${hscStreamVal}`;
       const gradStream = `Graduation_${gradStreamVal}`;
 
@@ -460,15 +564,15 @@
       let totalScore = sscScore + hscScoreVal + gradScore + enggScore + workExpScore + genderScore + categoryScore;
       totalScore = Math.min(Math.floor(totalScore * 1000), 1000);
 
-      // Hide Wizard, Show Results
+      // Hide Wizard Page, Show Results Page
       document.getElementById("wizardContainer").style.display = "none";
       document.getElementById("resultsContainer").style.display = "block";
 
-      // Update Score
+      // Update the Score Meter
       document.getElementById("scoreFill").style.width = (totalScore / 1000 * 100) + "%";
       document.getElementById("scoreDisplay").textContent = `IMS Profile Score: ${totalScore}`;
 
-      // Chosen percentile + suggestions
+      // Show chosen percentile and the relevant college suggestions
       document.getElementById("chosenPercentile").textContent = `You chose ~${userPct}% as your CAT percentile.`;
       const suggestion = getCollegeSuggestion(userPct);
       document.getElementById("collegeSuggestions").textContent = `Potential Colleges: ${suggestion}`;
@@ -478,9 +582,11 @@
       const profileCardsDiv = document.getElementById("profileCards");
       profileCardsDiv.innerHTML = "";
 
+      // If none found, just show all for demo
       if (similarList.length === 0) {
         similarList.push(...dummyProfiles);
       }
+
       similarList.forEach((p) => {
         profileCardsDiv.innerHTML += `
           <div class="profile-card">
@@ -494,6 +600,7 @@
       });
     }
 
+    // Helper to look up points from the table
     function getLookupValue(category, value) {
       for (const range in lookupPoints[category]) {
         const [min, max] = range.split('-').map(Number);
@@ -504,7 +611,9 @@
       return 0;
     }
 
-    /* WIZARD STEPS */
+    /* -----------------------
+       MULTI-STEP FORM LOGIC
+    ------------------------*/
     let currentStep = 1;
     const totalSteps = 10;
 
@@ -513,18 +622,25 @@
     };
 
     function showStep(step) {
+      // Hide all steps
       const steps = document.querySelectorAll(".form-step");
       steps.forEach((s) => s.classList.remove("active"));
 
+      // Show current step
       const currentStepDiv = document.querySelector(`.form-step[data-step="${step}"]`);
       if (currentStepDiv) currentStepDiv.classList.add("active");
 
+      // Update progress
       const progressPercent = (step / totalSteps) * 100;
       document.getElementById("progressFill").style.width = progressPercent + "%";
 
+      // Show/hide prev button
       document.getElementById("prevBtn").style.display = (step === 1) ? "none" : "inline-block";
+
+      // Update next button text
       document.getElementById("nextBtn").textContent = (step === totalSteps) ? "Finish" : "Next";
 
+      // Encouraging message
       setEncouragingMessage(step);
     }
 
@@ -545,6 +661,7 @@
       }
     }
 
+    // Basic validation
     function validateCurrentStep() {
       const currentInput = document.querySelector(`.form-step[data-step="${currentStep}"] input, 
                                                    .form-step[data-step="${currentStep}"] select`);
@@ -556,10 +673,10 @@
       return true;
     }
 
+    // Encouraging messages (example with some dynamic checks)
     function setEncouragingMessage(step) {
       const messageDiv = document.getElementById("encouragingMessage");
       messageDiv.textContent = "";
-
       switch(step) {
         case 1:
           messageDiv.textContent = "Select your gender. Female candidates often get diversity points!";
@@ -603,12 +720,15 @@
       }
     }
 
+    // Reset everything and start over
     function resetWizard() {
       currentStep = 1;
+      // Clear inputs
       document.querySelectorAll("#wizardContainer input, #wizardContainer select").forEach(elem => elem.value = "");
       document.getElementById("catPercentileSlider").value = 90;
       document.getElementById("sliderVal").textContent = "90";
 
+      // Hide results page, show wizard page
       document.getElementById("resultsContainer").style.display = "none";
       document.getElementById("wizardContainer").style.display = "flex";
       showStep(currentStep);
