@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>MBA Admissions Wizard with CAT Percentile Slider</title>
+  <style>
+    /* Basic Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    /* -----------------------------
+       PAGE 1: Wizard Container
+    ------------------------------*/
+    #wizardContainer {
+      max-width: 600px;
+      margin: 20px auto;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .wizard-header {
+      background: linear-gradient(135deg, #58aaf8 0%, #1e90ff 100%);
+      color: #fff;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .wizard-body {
+      padding: 20px;
+    }
+
+    .wizard-header h2 {
+      margin-bottom: 10px;
+    }
+
+    /* Progress Bar */
+    #progressBar {
+      width: 100%;
+      background-color: rgba(255,255,255,0.3);
+      border-radius: 5px;
+      overflow: hidden;
+      height: 8px;
+      margin-bottom: 15px;
+    }
+    #progressFill {
+      width: 0%;
+      height: 100%;
+      background-color: #28a745;
+      transition: width 0.4s ease;
+    }
+
+    /* Form Steps (fade effect) */
+    .form-step {
+      display: none;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+    .form-step.active {
+      display: block;
+      opacity: 1;
+    }
+
+    .input-label {
+      font-weight: bold;
+      margin: 10px 0 5px;
+      display: block;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+      outline: none;
+    }
+
+    /* Range Slider for CAT percentile */
+    #catPercentileSlider {
+      width: 100%;
+      margin: 10px 0;
+    }
+
+    .slider-value {
+      text-align: center;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+
+    .nav-buttons {
+      margin-top: 10px;
+      display: flex;
+      justify-content: space-between;
+    }
+    button {
+      cursor: pointer;
+      border: none;
+      background: #ff9800;
+      color: #fff;
+      font-size: 16px;
+      padding: 10px 20px;
+      border-radius: 4px;
+      transition: background 0.3s ease;
+    }
+    button:hover {
+      background: #ffac33;
+    }
+    #prevBtn {
+      background: #6c757d;
+    }
+    #prevBtn:hover {
+      background: #5a6268;
+    }
+
+    /* Encouraging Message */
+    #encouragingMessage {
+      font-style: italic;
+      color: #333;
+      min-height: 30px;
+      margin-bottom: 10px;
+    }
+
+    /* -----------------------------
+       PAGE 2: Results Container
+    ------------------------------*/
+    #resultsContainer {
+      max-width: 800px;
+      margin: 20px auto;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      display: none; /* hidden until final step */
+      padding: 20px;
+    }
+
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .results-header h2 {
+      color: #333;
+    }
+
+    /* Start Over button */
+    #startOverBtn {
+      background: #dc3545;
+      color: #fff;
+      padding: 8px 15px;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    #startOverBtn:hover {
+      background: #c82333;
+    }
+
+    /* IMS Profile Score Explanation */
+    #scoreExplanation {
+      font-style: italic;
+      color: #666;
+      margin-bottom: 15px;
+    }
+
+    /* Score Meter */
+    .score-meter {
+      width: 100%;
+      height: 20px;
+      background: #ddd;
+      border-radius: 10px;
+      overflow: hidden;
+      margin: 15px 0;
+    }
+    .score-fill {
+      height: 100%;
+      width: 0%;
+      background: green;
+      transition: width 0.5s;
+    }
+    .score-text {
+      font-size: 24px;
+      font-weight: bold;
+      text-align: center;
+      margin: 10px 0;
+      color: #333;
+    }
+
+    /* Section headings */
+    h3.section-title {
+      margin-top: 20px;
+      margin-bottom: 10px;
+      color: #333;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 5px;
+    }
+
+    /* Blank Profile Picture (animated) */
+    #blankProfilePic {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: #ddd url('https://via.placeholder.com/80?text=You') no-repeat center/cover;
+      margin: 10px auto;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    /* Dummy Profile Cards */
+    .profile-cards {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 15px;
+    }
+    .profile-card {
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      width: calc(33% - 10px);
+      padding: 10px;
+      text-align: center;
+      box-shadow: 0 0 5px rgba(0,0,0,0.05);
+      background: #fafafa;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .profile-card:hover {
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      transform: scale(1.02);
+    }
+    .profile-card img {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      margin-bottom: 8px;
+    }
+    .profile-card h4 {
+      margin-bottom: 5px;
+      font-size: 16px;
+      color: #333;
+    }
+    .profile-card p {
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 8px;
+    }
+
+    /* "Next one could be you!" styling */
+    #closingNote {
+      font-weight: bold;
+      color: #444;
+      margin-top: 15px;
+      text-align: center;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .profile-card {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- PAGE 1: Wizard -->
+  <div id="wizardContainer">
+    <div class="wizard-header">
+      <h2>MBA Admissions Wizard</h2>
+      <div id="progressBar">
+        <div id="progressFill"></div>
+      </div>
+      <div id="encouragingMessage"></div>
+    </div>
+    <div class="wizard-body">
+      <!-- Form Steps -->
+      <div class="form-step active" data-step="1">
+        <label class="input-label">Gender:</label>
+        <select id="gender">
+          <option value="">Select</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+        </select>
+      </div>
+
+      <div class="form-step" data-step="2">
+        <label class="input-label">SSC %:</label>
+        <input type="number" id="ssc" min="0" max="100" placeholder="Enter SSC %" />
+      </div>
+
+      <div class="form-step" data-step="3">
+        <label class="input-label">HSC %:</label>
+        <input type="number" id="hsc" min="0" max="100" placeholder="Enter HSC %" />
+      </div>
+
+      <div class="form-step" data-step="4">
+        <label class="input-label">HSC Stream:</label>
+        <select id="hscStream">
+          <option value="">Select</option>
+          <option value="Science">Science</option>
+          <option value="Commerce">Commerce</option>
+          <option value="Arts">Arts</option>
+        </select>
+      </div>
+
+      <div class="form-step" data-step="5">
+        <label class="input-label">Graduation %:</label>
+        <input type="number" id="grad" min="0" max="100" placeholder="Enter Graduation %" />
+      </div>
+
+      <div class="form-step" data-step="6">
+        <label class="input-label">Graduation Stream:</label>
+        <select id="gradStream">
+          <option value="">Select</option>
+          <option value="Engineering">Engineering</option>
+          <option value="Science">Science</option>
+          <option value="Commerce">Commerce</option>
+          <option value="Arts">Arts</option>
+        </select>
+      </div>
+
+      <div class="form-step" data-step="7">
+        <label class="input-label">Engg/Non Engg:</label>
+        <select id="enggType">
+          <option value="">Select</option>
+          <option value="Engg">Engg</option>
+          <option value="Non-Engg">Non-Engg</option>
+        </select>
+      </div>
+
+      <div class="form-step" data-step="8">
+        <label class="input-label">Work Experience (months):</label>
+        <input type="number" id="workExp" min="0" max="120" placeholder="Enter Work Experience" />
+      </div>
+
+      <div class="form-step" data-step="9">
+        <label class="input-label">Category:</label>
+        <select id="category">
+          <option value="">Select</option>
+          <option value="General">General</option>
+          <option value="NC-OBC">NC-OBC</option>
+          <option value="EWS">EWS</option>
+          <option value="SC">SC</option>
+          <option value="ST">ST</option>
+        </select>
+      </div>
+
+      <!-- Step 10: Slider for CAT Percentile -->
+      <div class="form-step" data-step="10">
+        <label class="input-label">Expected CAT Percentile:</label>
+        <div class="slider-value">Value: <span id="sliderVal">90</span>%</div>
+        <input type="range" id="catPercentileSlider" min="80" max="99" value="90" />
+      </div>
+
+      <!-- Navigation Buttons -->
+      <div class="nav-buttons">
+        <button id="prevBtn" onclick="prevStep()" style="display:none;">Previous</button>
+        <button id="nextBtn" onclick="nextStep()">Next</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 2: Results -->
+  <div id="resultsContainer">
+    <div class="results-header">
+      <h2>Results Page</h2>
+      <button id="startOverBtn" onclick="resetWizard()">Start Over</button>
+    </div>
+
+    <p id="scoreExplanation">
+      IMS Profile Score: think of it as your “CIBIL” rating for B-school admissions—short, fun, and super insightful!
+    </p>
+
+    <!-- IMS Profile Score Section -->
+    <h3 class="section-title">Your IMS Profile Score</h3>
+    <div class="score-meter">
+      <div class="score-fill" id="scoreFill"></div>
+    </div>
+    <div class="score-text" id="scoreDisplay">IMS Profile Score: 0</div>
+    <div id="blankProfilePic"></div>
+
+    <!-- Colleges based on chosen CAT percentile -->
+    <h3 class="section-title">Your Chosen CAT Percentile</h3>
+    <p id="chosenPercentile"></p>
+    <p id="collegeSuggestions"></p>
+
+    <!-- Similar Past Aspirants -->
+    <h3 class="section-title">Similar Past Aspirants</h3>
+    <p style="margin-bottom:10px; color:#555;">
+      Below are some profiles from our <strong>previous years' aspirants</strong> who had a
+      <strong>similar IMS Profile Score</strong> and <strong>CAT percentile</strong>. See where they eventually landed!
+    </p>
+    <div class="profile-cards" id="profileCards"></div>
+
+    <!-- Closing Note -->
+    <div id="closingNote">Next one could be you!</div>
+  </div>
+
+  <script>
+    /* ---------------------------
+       LOOKUP TABLES & SCORE LOGIC
+    ----------------------------*/
+    const lookupPoints = {
+      "SSC": {
+        "0-55": 1,
+        "56-60": 2,
+        "61-70": 3,
+        "71-80": 5,
+        "81-90": 8,
+        "91-100": 10
+      },
+      "HSC_Science": {
+        "0-50": 1,
+        "51-55": 2,
+        "56-65": 3,
+        "66-75": 5,
+        "76-90": 8,
+        "91-100": 10
+      },
+      "HSC_Commerce": {
+        "0-50": 1,
+        "51-55": 2,
+        "56-65": 3,
+        "66-75": 5,
+        "76-90": 8,
+        "91-100": 10
+      },
+      "HSC_Arts": {
+        "0-50": 1,
+        "51-55": 2,
+        "56-65": 3,
+        "66-75": 5,
+        "76-90": 8,
+        "91-100": 10
+      },
+      "Graduation_Engineering": {
+        "1-60": 1,
+        "61-65": 2,
+        "66-70": 3,
+        "71-75": 5,
+        "76-85": 8,
+        "86-100": 10
+      },
+      "Graduation_Science": {
+        "1-60": 1,
+        "61-65": 2,
+        "66-70": 3,
+        "71-75": 5,
+        "76-85": 8,
+        "86-100": 10
+      },
+      "Graduation_Commerce": {
+        "1-60": 1,
+        "61-65": 2,
+        "66-70": 3,
+        "71-75": 5,
+        "76-85": 8,
+        "86-100": 10
+      },
+      "Graduation_Arts": {
+        "1-60": 1,
+        "61-65": 2,
+        "66-70": 3,
+        "71-75": 5,
+        "76-85": 8,
+        "86-100": 10
+      },
+      "Engg_NonEngg": { "Engg": 0, "Non-Engg": 0.08 },
+      "Gender": { "Male": 0, "Female": 0.08 },
+      "Category": {
+        "General": 0,
+        "NC-OBC": 0.1,
+        "EWS": 0.1,
+        "SC": 0.25,
+        "ST": 0.3
+      },
+      "Work Experience": {
+        "0": 0, "1": 0, "2": 0, "3": 0, "4": 0, "5": 0,
+        "6": 0.1667, "7": 0.3333, "8": 0.5, "9": 0.6667, "10": 0.8333,
+        "11": 1, "12": 1.1667, "13": 1.3333, "14": 1.5, "15": 1.6667,
+        "16": 1.8333, "17": 2, "18": 2.1667, "19": 2.3333, "20": 2.5,
+        "21": 2.6667, "22": 2.8333, "23": 3, "24": 3.1667, "25": 3.3333,
+        "26": 3.5, "27": 3.6667, "28": 3.8333, "29": 4, "30": 4.1667,
+        "31": 4.3333, "32": 4.5, "33": 4.6667, "34": 4.8333, "35": 5,
+        "36": 5, "37": 4.8, "38": 4.6, "39": 4.4, "40": 4.2,
+        "41": 4, "42": 3.8, "43": 3.6, "44": 3.4, "45": 3.2,
+        "46": 3, "47": 2.8, "48": 2.6, "49": 2.4, "50": 2.2,
+        "51": 2, "52": 1.8, "53": 1.6, "54": 1.4, "55": 1.2,
+        "56": 1, "57": 0.8, "58": 0.6, "59": 0.4, "60": 0.2
+      }
+    };
+
+    // Colleges suggested based on user-chosen CAT percentile
+    const percentileCollegeMap = [
+      { min: 99, label: "99+", colleges: "Top IIMs (A/B/C), XLRI, FMS, SPJIMR, etc." },
+      { min: 95, label: "95-98", colleges: "IIM L, IIM K, IIM I, MDI, IMT, etc." },
+      { min: 90, label: "90-94", colleges: "Newer IIMs, XIMB, IMI, etc." },
+      { min: 80, label: "80-89", colleges: "TAPMI, BIMTECH, Tier-2 B-schools" },
+      { min: 0,  label: "<80",  colleges: "Focus on building your profile and consider retaking CAT." },
+    ];
+
+  // Dummy profiles for "Similar Past Aspirants"
+const dummyProfiles = [
+  {
+    profileScore: 650,
+    catPercentile: 90,
+    colleges: ["IIM Lucknow", "IIM Indore"],
+    advice: "They improved their quantitative skills with targeted coaching, which helped them secure final admits.",
+    img: "https://via.placeholder.com/60/8f8e94/FFFFFF?text=P1"
+  },
+  {
+    profileScore: 750,
+    catPercentile: 95,
+    colleges: ["IIM Ahmedabad", "IIM Bangalore"],
+    advice: "They sharpened their interview and group discussion techniques, ensuring a well-rounded application.",
+    img: "https://via.placeholder.com/60/00bfff/FFFFFF?text=P2"
+  },
+  {
+    profileScore: 800,
+    catPercentile: 99,
+    colleges: ["XLRI", "SP Jain"],
+    advice: "They focused on leadership roles and soft skills, standing out in the final interview rounds.",
+    img: "https://via.placeholder.com/60/ff69b4/FFFFFF?text=P3"
+  }
+];
+
+
+    // Helper to find the best college range based on the chosen percentile
+    function getCollegeSuggestion(userPct) {
+      // Sort from highest to lowest
+      const sortedMap = percentileCollegeMap.sort((a, b) => b.min - a.min);
+      for (let item of sortedMap) {
+        if (userPct >= item.min) {
+          return item.colleges;
+        }
+      }
+      return sortedMap[sortedMap.length - 1].colleges; // fallback
+    }
+
+    // Helper to find dummy profiles that are "similar" to the user’s final score & percentile
+    function findSimilarProfiles(score, catPct) {
+      // For demonstration, let's just filter those within ±100 points and ±5 percentile
+      return dummyProfiles.filter(p => {
+        return Math.abs(p.profileScore - score) <= 100 && Math.abs(p.catPercentile - catPct) <= 5;
+      });
+    }
+
+    // Step 10: update slider value text in real-time
+    document.addEventListener("DOMContentLoaded", () => {
+      const slider = document.getElementById("catPercentileSlider");
+      const sliderVal = document.getElementById("sliderVal");
+      slider.addEventListener("input", () => {
+        sliderVal.textContent = slider.value;
+      });
+    });
+
+    // Main function to gather user inputs, compute IMS Profile Score, show results
+    function calculateScoreAndDisplay() {
+      const gender = document.getElementById("gender").value || "Male";
+      const ssc = parseInt(document.getElementById("ssc").value) || 0;
+      const hsc = parseInt(document.getElementById("hsc").value) || 0;
+      const hscStreamVal = document.getElementById("hscStream").value || "Science";
+      const grad = parseInt(document.getElementById("grad").value) || 0;
+      const gradStreamVal = document.getElementById("gradStream").value || "Engineering";
+      const enggType = document.getElementById("enggType").value || "Engg";
+      const workExp = parseInt(document.getElementById("workExp").value) || 0;
+      const category = document.getElementById("category").value || "General";
+
+      // Step 10: user-chosen CAT percentile
+      const userPct = parseInt(document.getElementById("catPercentileSlider").value);
+
+      const hscStream = HSC_${hscStreamVal};
+      const gradStream = Graduation_${gradStreamVal};
+
+      // Calculate partial scores
+      let sscScore = (getLookupValue("SSC", ssc) / 10) * 0.34;
+      let hscScoreVal = (getLookupValue(hscStream, hsc) / 10) * 0.34;
+      let gradScore = (getLookupValue(gradStream, grad) / 10) * 0.08;
+      let enggScore = lookupPoints["Engg_NonEngg"][enggType] || 0;
+      let workExpScore = ((lookupPoints["Work Experience"][workExp] || 0) / 5) * 0.08;
+      let genderScore = lookupPoints["Gender"][gender] || 0;
+      let categoryScore = lookupPoints["Category"][category] || 0;
+
+      let totalScore = sscScore + hscScoreVal + gradScore + enggScore + workExpScore + genderScore + categoryScore;
+      totalScore = Math.min(Math.floor(totalScore * 1000), 1000);
+
+      // Hide Wizard Page, Show Results Page
+      document.getElementById("wizardContainer").style.display = "none";
+      document.getElementById("resultsContainer").style.display = "block";
+
+      // Update the Score Meter
+      document.getElementById("scoreFill").style.width = (totalScore / 1000 * 100) + "%";
+      document.getElementById("scoreDisplay").textContent = "IMS Profile Score: " + totalScore;
+
+      // Show chosen percentile and the relevant college suggestions
+      document.getElementById("chosenPercentile").textContent = You chose ~${userPct}% as your CAT percentile.;
+      const suggestion = getCollegeSuggestion(userPct);
+      document.getElementById("collegeSuggestions").textContent = Potential Colleges: ${suggestion};
+
+      // Similar Past Aspirants
+      const similarList = findSimilarProfiles(totalScore, userPct);
+      const profileCardsDiv = document.getElementById("profileCards");
+      profileCardsDiv.innerHTML = "";
+
+      // If none found, just show all for demo
+      if (similarList.length === 0) {
+        similarList.push(...dummyProfiles);
+      }
+
+      similarList.forEach((p) => {
+        profileCardsDiv.innerHTML += 
+          <div class="profile-card">
+            <img src="${p.img}" alt="Profile Picture" />
+            <h4>Previous Aspirant's Score: ${p.profileScore}</h4>
+            <p>CAT Percentile: ${p.catPercentile}%</p>
+            <p><strong>Final Admits:</strong> ${p.colleges.join(", ")}</p>
+            <p style="font-style:italic;">${p.advice}</p>
+          </div>
+        ;
+      });
+    }
+
+    // Helper to look up points from the table
+    function getLookupValue(category, value) {
+      for (const range in lookupPoints[category]) {
+        const [min, max] = range.split('-').map(Number);
+        if (value >= min && value <= max) {
+          return lookupPoints[category][range];
+        }
+      }
+      return 0;
+    }
+
+    /* -----------------------
+       MULTI-STEP FORM LOGIC
+    ------------------------*/
+    let currentStep = 1;
+    const totalSteps = 10;
+
+    window.onload = function() {
+      showStep(currentStep);
+    };
+
+    function showStep(step) {
+      // Hide all steps
+      const steps = document.querySelectorAll(".form-step");
+      steps.forEach((s) => s.classList.remove("active"));
+
+      // Show current step
+      const currentStepDiv = document.querySelector(.form-step[data-step="${step}"]);
+      if (currentStepDiv) currentStepDiv.classList.add("active");
+
+      // Update progress
+      const progressPercent = (step / totalSteps) * 100;
+      document.getElementById("progressFill").style.width = progressPercent + "%";
+
+      // Show/hide prev button
+      document.getElementById("prevBtn").style.display = (step === 1) ? "none" : "inline-block";
+
+      // Update next button text
+      document.getElementById("nextBtn").textContent = (step === totalSteps) ? "Finish" : "Next";
+
+      // Encouraging message
+      setEncouragingMessage(step);
+    }
+
+    function nextStep() {
+      if (!validateCurrentStep()) return;
+      if (currentStep < totalSteps) {
+        currentStep++;
+        showStep(currentStep);
+      } else {
+        calculateScoreAndDisplay();
+      }
+    }
+
+    function prevStep() {
+      if (currentStep > 1) {
+        currentStep--;
+        showStep(currentStep);
+      }
+    }
+
+    // Basic validation
+    function validateCurrentStep() {
+      const currentInput = document.querySelector(.form-step[data-step="${currentStep}"] input, 
+                                                   .form-step[data-step="${currentStep}"] select);
+      if (!currentInput) return true;
+      if (!currentInput.value) {
+        alert("Please fill out this field before proceeding.");
+        return false;
+      }
+      return true;
+    }
+
+    // Encouraging messages (example with some dynamic checks)
+    function setEncouragingMessage(step) {
+      const messageDiv = document.getElementById("encouragingMessage");
+      messageDiv.textContent = "";
+      switch(step) {
+        case 1:
+          messageDiv.textContent = "Select your gender. Female candidates often get diversity points!";
+          break;
+        case 2:
+          const sscValue = parseInt(document.getElementById("ssc").value) || 0;
+          if (sscValue >= 90) {
+            messageDiv.textContent = "Wow, outstanding SSC performance!";
+          } else if (sscValue >= 70) {
+            messageDiv.textContent = "Solid SSC score. Keep it up!";
+          } else {
+            messageDiv.textContent = "Don’t worry, other areas can boost your profile!";
+          }
+          break;
+        case 3:
+          messageDiv.textContent = "HSC % is also key. Keep pushing for strong academics!";
+          break;
+        case 4:
+          messageDiv.textContent = "Different HSC streams open various opportunities!";
+          break;
+        case 5:
+          messageDiv.textContent = "Graduation performance matters a lot for MBA admissions.";
+          break;
+        case 6:
+          messageDiv.textContent = "Engineering, Science, Commerce, Arts... each has unique advantages!";
+          break;
+        case 7:
+          messageDiv.textContent = "Engg/Non-Engg can affect profile diversity. Good choice so far!";
+          break;
+        case 8:
+          messageDiv.textContent = "Work experience can significantly boost your application!";
+          break;
+        case 9:
+          messageDiv.textContent = "Category can impact cutoffs. Provide accurate info here.";
+          break;
+        case 10:
+          messageDiv.textContent = "Slide to pick your expected CAT percentile!";
+          break;
+        default:
+          messageDiv.textContent = "";
+      }
+    }
+
+    // Reset everything and start over
+    function resetWizard() {
+      currentStep = 1;
+      // Clear inputs
+      document.querySelectorAll("#wizardContainer input, #wizardContainer select").forEach(elem => elem.value = "");
+      document.getElementById("catPercentileSlider").value = 90;
+      document.getElementById("sliderVal").textContent = "90";
+
+      // Hide results page, show wizard page
+      document.getElementById("resultsContainer").style.display = "none";
+      document.getElementById("wizardContainer").style.display = "flex";
+      showStep(currentStep);
+    }
+  </script>
+</body>
+</html>
